@@ -1,9 +1,9 @@
 <?php
-include 'config/connection.php';
-
+include "config/connection.php";
+session_start();
 
 if(isLoggedIn()) {
-    if (getUserRole() === 'admin') {
+    if (getUserRole() === "admin") {
         header("Location: admin/dashboard.php");
     } else {
         header("Location: user/dashboard.php");
@@ -13,9 +13,9 @@ if(isLoggedIn()) {
 
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    if(empty($_POST["username"])) || empty($_POST["password"])) {
+    if (empty($_POST["username"]) || empty($_POST["password"])) {
         $error = "Both fields are required.";
     } else {
         $username = $_POST["username"];
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $db->query($sql);
 
         //to check if a user is found
-        if(mysli_num_rows($result) == 1) {
+        if(mysqli_num_rows($result) == 1) {
             $user = mysqli_fetch_assoc($result);
 
             //code to store in sessiion
@@ -35,20 +35,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username']; 
             $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['role'] = $user['role'];
-        }
 
         //redirecting user to the appropriate dashboard
-        if ($role === 'admin') {
+        if ($user['role'] === 'admin') {
             header("Location: admin/dashboard.php");
         } else {
             header("Location: user/dashboard.php");
         }   
-        exit()
+        exit();
+
     } else {
         $error = "Incorrect username, password, or role.";
     }
+    }
 }
 
+?>
 
 
 
