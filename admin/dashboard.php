@@ -4,7 +4,7 @@ if(session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include . '../config/connection.php';  
+include  '../config/connection.php';  
 
 requireAdmin();
 
@@ -47,3 +47,36 @@ $message = $_SESSION['successful'] ?? '';
 $error_message = $_SESSION['error'] ?? '';
 unset($_SESSION['successful'], $_SESSION['error']);
 ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bike Rental Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="bg-secondary text-white py-5"> 
+        <div class="container tex-center py-5">
+            <h1 class="display-4">Admin Dashboard</h1>
+            <nav class="nav">
+                <a class="nav-link text-white" href="../index.php">Home</a>
+                <a class="nav-link text-white" href="../about.php">About</a>
+                <a class="nav-link text-white" href="../contact.php">Contact</a>
+                <a class="nav-link text-white" href="../login.php">Login</a>
+                <a class="nav-link text-white" href="../register.php">Register</a>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="container my-5">
+        <?php if ($message): ?>
+            <div class="alert alert-success"><?= $message ?></div>
+        <?php endif; ?>
+        <?php if ($error_message): ?>
+            <div class="alert alert-danger"><?= $error_message ?></div>
+        <?php endif; ?>
