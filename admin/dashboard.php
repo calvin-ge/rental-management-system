@@ -1,0 +1,49 @@
+<?php
+
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include . '../config/connection.php';  
+
+requireAdmin();
+
+$total_bikes = 0;
+$bikes_result = $db->query("SELECT SUM(quantity) AS total FROM bicycles");
+if ($bikes_result && $bikes_result->num_rows > 0) {
+    $row = $bikes_result->fetch_assoc();
+    $total_bikes = $row['total'] ?? 0;
+}
+
+
+$total_users = 0;
+$users_result = $db->query("SELECT COUNT(*) AS total FROM users");
+if ($users_result && $users_result->num_rows > 0) {
+    $row = $users_result->fetch_assoc();
+    $total_users = $row['total'] ?? 0;
+}
+
+$total_donated = 0;
+$donation_result = $db->query("SELECT SUM(amount) as total FROM charity_donations");
+if ($donation_result && $donation_result->num_rows > 0) {
+    $row = $donation_result->fetch_assoc();
+    $total_donated = $row['total'] ?? 0;
+}
+
+$bikes = $db->query("SELECT * FROM bicycles ORDER BY name ASC");
+
+$users = $db->query("SELECT * FROM users WHERE role='user' ORDER BY uid ASC");
+
+$rentals = $db->query("
+    SELECT r.*, b.name AS bike_name, u.fullname 
+    FROM rentals r 
+    JOIN bicycles b ON r.bike_id = b.bike_id
+    JOIN users u ON r.user_id = u.uid
+    ORDER BY r.rental_date DESC
+");
+
+//Message handler
+$message = $_SESSION['successful'] ?? '';
+$error_message = $_SESSION['error'] ?? '';
+unset($_SESSION['successful'], $_SESSION['error']);
+?>
