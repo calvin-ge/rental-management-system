@@ -60,23 +60,92 @@ unset($_SESSION['successful'], $_SESSION['error']);
 </head>
 <body>
     <div class="bg-secondary text-white py-5"> 
-        <div class="container tex-center py-5">
-            <h1 class="display-4">Admin Dashboard</h1>
-            <nav class="nav">
+        <div class="container-fluid">
+            <span class="navbar-brand">Admin Dashboard</span>
+            <nav class="nav"> 
+                
                 <a class="nav-link text-white" href="../index.php">Home</a>
                 <a class="nav-link text-white" href="../about.php">About</a>
                 <a class="nav-link text-white" href="../contact.php">Contact</a>
                 <a class="nav-link text-white" href="../login.php">Login</a>
                 <a class="nav-link text-white" href="../register.php">Register</a>
-            </nav>
+                <a href="../logout.php" class="btn btn-danger btn-sm">Logout</a>
+                 <span class="text-white me-3">Welcome, <?php echo $_SESSION['fullname']; ?></span>
+            
+            </nav>  
         </div>
 
     </div>
 
-    <div class="container my-5">
-        <?php if ($message): ?>
-            <div class="alert alert-success"><?= $message ?></div>
-        <?php endif; ?>
-        <?php if ($error_message): ?>
-            <div class="alert alert-danger"><?= $error_message ?></div>
-        <?php endif; ?>
+     <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">
+            <!-- <i class="bi "></i> Admin Dashboard -->
+            
+        </span>
+        <div>
+          
+            
+        </div>
+    </div>
+</nav>
+
+
+<?php if ($message): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?php echo $message; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($error_message): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?php echo $error_message; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
+
+
+    <!--- Bike Inventory Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bikes in Inventory</h5>
+                    <p class="card-text display-4"><?php echo $total_bikes; ?></p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bikes in Inventory</h5>
+                    <p class="card-text display-4"><?php echo $total_bikes; ?></p>
+                </div>
+            </div>
+        </div>
+    
+
+    
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bikes in Inventory</h5>
+                    <p class="card-text display-4"><?php echo $total_bikes; ?></p>
+                </div>
+            </div>
+        </div>
+    
+
+        
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bikes in Inventory</h5>
+                    <p class="card-text display-4"><?php echo $total_bikes; ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
