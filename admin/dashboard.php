@@ -1,58 +1,34 @@
 <?php
-
-if(session_status() === PHP_SESSION_NONE) {
+// Start session first
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include  '../config/connection.php';  
+// Include database connection
+require_once __DIR__ . '/../config/connection.php';
 
+// Check login and admin status
 requireAdmin();
 
-$total_bikes = 0;
-$bikes_result = $db->query("SELECT SUM(quantity) AS total FROM bicycles");
-if ($bikes_result && $bikes_result->num_rows > 0) {
-    $row = $bikes_result->fetch_assoc();
-    $total_bikes = $row['total'] ?? 0;
-}
+// Get statistics
+$total_bikes = $db->query("SELECT SUM(quantity) as total FROM bicycles")->fetch_assoc()['total'] ?? 0;
+$total_users = $db->query("SELECT COUNT(*) as total FROM users WHERE role='user'")->fetch_assoc()['total'];
+$active_rentals = $db->query("SELECT COUNT(*) as total FROM rentals WHERE rental_status='active'")->fetch_assoc()['total'];
+$total_donated = $db->query("SELECT SUM(amount) as total FROM charity_donations")->fetch_assoc()['total'] ?? 0;
 
+// Get all data for tables
+$bikes = $db->query("SELECT * FROM bicycles ORDER BY bike_id DESC");
+$users = $db->query("SELECT * FROM users WHERE role='user' ORDER BY uid DESC");
+$rentals = $db->query("SELECT r.*, b.name as bike_name, u.fullname 
+                     FROM rentals r 
+                     JOIN bicycles b ON r.bike_id = b.bike_id 
+                     JOIN users u ON r.user_id = u.uid 
+                     ORDER BY r.rental_id DESC");
 
-$total_users = 0;
-$users_result = $db->query("SELECT COUNT(*) AS total FROM users");
-if ($users_result && $users_result->num_rows > 0) {
-    $row = $users_result->fetch_assoc();
-    $total_users = $row['total'] ?? 0;
-}
-
-$active_rentals = 0;
-$rentals_result = $db->query("SELECT COUNT(*) as total FROM rentals WHERE rental_status='active'");
-if ($rentals_result && $rentals_result->num_rows > 0) {
-    $row = $rentals_result->fetch_assoc();
-    $active_rentals = $row['total'];
-}
-
-$total_donated = 0;
-$donation_result = $db->query("SELECT SUM(amount) as total FROM charity_donations");
-if ($donation_result && $donation_result->num_rows > 0) {
-    $row = $donation_result->fetch_assoc();
-    $total_donated = $row['total'] ?? 0;
-}
-
-
-$bikes = $db->query("SELECT * FROM bicycles ORDER BY name ASC");
-
-$users = $db->query("SELECT * FROM users WHERE role='user' ORDER BY uid ASC");
-
-$rentals = $db->query("SELECT r.*, b.name AS bike_name, u.fullname 
-    FROM rentals r 
-    JOIN bicycles b ON r.bike_id = b.bike_id
-    JOIN users u ON r.user_id = u.uid
-    ORDER BY r.rental_date DESC
-");
-
-//Message handler
+// Handle messages
 $message = $_SESSION['successful'] ?? '';
 $error_message = $_SESSION['error'] ?? '';
-unset($_SESSION['successful'], $_SESSION['error']);
+unset($_SESSION['succesful'], $_SESSION['error']);
 ?>
 
 
@@ -97,20 +73,20 @@ unset($_SESSION['successful'], $_SESSION['error']);
     </div>
 </nav>
 
+<div class="container mt-4">
+    <?php if ($message): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php echo $message; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php endif; ?>
 
-<?php if ($message): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo $message; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <?php endif; ?>
-
-    <?php if ($error_message): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo $error_message; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <?php endif; ?>
+        <?php if ($error_message): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo $error_message; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php endif; ?>
 
 
     <!--- Bike Inventory Overview -->
@@ -119,7 +95,7 @@ unset($_SESSION['successful'], $_SESSION['error']);
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Total Bikes</h5>
-                    <p class="card-text display-4"><?php echo $total_bikes; ?></p>
+                    <h2><?php echo $total_bikes; ?></h2>
                 </div>
             </div>
         </div>
@@ -133,8 +109,6 @@ unset($_SESSION['successful'], $_SESSION['error']);
                 </div>
             </div>
         </div>
-    
-
     
         <div class="col-md-3">
             <div class="card text-white bg-primary mb-3">
@@ -157,20 +131,21 @@ unset($_SESSION['successful'], $_SESSION['error']);
         </div>
     </div>
 
-<!---  switch between tabs -->
-    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="bikes-tab" data-bs-toggle="tab" data-bs-target="#bikesTab" type="button" role="tab">Bikes</button>
-    </li>
-            <li class="nav-item" role="presentation">
-        <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#usersTab" type="button" role="tab">Users</button>
-    </li>
-            <li class="nav-item" role="presentation">
-        <button class="nav-link" id="rentals-tab" data-bs-toggle="tab" data-bs-target="#rentalsTab" type="button" role="tab">Rentals</button>
-    </li>
-</ul>
+    <!---  switch between tabs -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#bikesTab">Bikes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#usersTab">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#rentalsTab">Rentals</a>
+        </li>
+    </ul>
 
     <div class="tab-content">
+        
         <div class="tab-pane fade show active" id="bikesTab">
             <div class="card">
                 <div class="card-header">
@@ -206,6 +181,7 @@ unset($_SESSION['successful'], $_SESSION['error']);
                 </div>
             </div>
 
+
             <!--- Bike Inventory Table-->
             <div class="card mt-4">
                 <div class="card-header">
@@ -213,7 +189,7 @@ unset($_SESSION['successful'], $_SESSION['error']);
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table">
                             <thead class="table-danger">
                                 <tr>
                                     <th>S/N</th>    
@@ -241,7 +217,7 @@ unset($_SESSION['successful'], $_SESSION['error']);
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="delte_bike.php?id=<?php echo $bike["bike_id"]; ?>"
+                                        <a href="delete_bike.php?id=<?php echo $bike["bike_id"]; ?>"
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Delete item?')">
                                             Delete
@@ -251,24 +227,25 @@ unset($_SESSION['successful'], $_SESSION['error']);
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
         </div>
 
+
+
         <!--- user Management Tab -->
         <div class="tab-pane fade" id="usersTab">
             <div class="card">
                 <div class="card-header">
-                    <h5> New Customer</h5>
+                    <h5> Add New Customer</h5>
                 </div>
                 <div class="card-body">
                     <form action="add_user.php" method="POST" class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <input type="email" name="email" class="form-control" placeholder="Email Address" required>
                         </div>
                         <div class="col-md-2">
@@ -325,6 +302,9 @@ unset($_SESSION['successful'], $_SESSION['error']);
             </div>
         </div>
 
+
+
+
         <!--- Rentals Tab -->
 
         <div class="tab-pane fade" id="rentalsTab">
@@ -367,26 +347,14 @@ unset($_SESSION['successful'], $_SESSION['error']);
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    // Initialize Bootstrap tabs
-    var triggerTabList = [].slice.call(document.querySelectorAll('.nav-tabs a'))
-    triggerTabList.forEach(function (triggerEl) {
-        var tabTrigger = new bootstrap.Tab(triggerEl)
-        triggerEl.addEventListener('click', function (event) {
-            event.preventDefault()
-            tabTrigger.show()
-        })
-    })
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>                               
 </body>
 </html>   
 
