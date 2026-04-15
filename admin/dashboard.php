@@ -1,22 +1,20 @@
 <?php
-// Start session first
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include database connection
 require_once __DIR__ . '/../config/connection.php';
 
-// Check login and admin status
+//  to check the logi statusts
 requireAdmin();
 
-// Get statistics
+//stats
 $total_bikes = $db->query("SELECT SUM(quantity) as total FROM bicycles")->fetch_assoc()['total'] ?? 0;
 $total_users = $db->query("SELECT COUNT(*) as total FROM users WHERE role='user'")->fetch_assoc()['total'];
 $active_rentals = $db->query("SELECT COUNT(*) as total FROM rentals WHERE rental_status='active'")->fetch_assoc()['total'];
 $total_donated = $db->query("SELECT SUM(amount) as total FROM charity_donations")->fetch_assoc()['total'] ?? 0;
 
-// Get all data for tables
+// to get data for tables
 $bikes = $db->query("SELECT * FROM bicycles ORDER BY bike_id DESC");
 $users = $db->query("SELECT * FROM users WHERE role='user' ORDER BY uid DESC");
 $rentals = $db->query("SELECT r.*, b.name as bike_name, u.fullname 
@@ -25,7 +23,7 @@ $rentals = $db->query("SELECT r.*, b.name as bike_name, u.fullname
                      JOIN users u ON r.user_id = u.uid 
                      ORDER BY r.rental_id DESC");
 
-// Handle messages
+// Message handler
 $message = $_SESSION['successful'] ?? '';
 $error_message = $_SESSION['error'] ?? '';
 unset($_SESSION['succesful'], $_SESSION['error']);
@@ -217,9 +215,9 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="delete_bike.php?id=<?php echo $bike["bike_id"]; ?>"
+                                        <a href="delete_bike.php?id=<?php echo (int)$bike["bike_id"]; ?>"
                                             class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Delete item?')">
+                                            onclick="return confirm('Do you want to remove this bike?')">
                                             Delete
                                         </a>
                                     </td>
