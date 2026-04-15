@@ -24,7 +24,7 @@ if(session_status() === PHP_SESSION_NONE) {
 
 //to check if useer is logged in
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
 
