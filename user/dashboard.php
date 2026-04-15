@@ -134,7 +134,7 @@ function getBikeImage($category) {
                         <div class="col-md-2 text-center">
                             <img src="<?php echo getBikeImage($rental['category']); ?>" 
                                  class="rounded" 
-                                 style="width: 70px; height: 70px; object-fit: cover;"
+                                 style="width: 70px; height: 200px; object-fit: cover;"
                                  alt="<?php echo $rental['bike_name']; ?>">
                         </div>
                         <div class="col-md-4">
