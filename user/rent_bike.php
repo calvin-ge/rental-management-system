@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../config/connection.php';
-requireUser();
+requireLogin();
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $end = new DateTime($return_date);
     $days = $start->diff($end)->days;
     if ($days == 0) $days = 1;
-    %total = $days * $bike['price_per_day'] * $quantity;   
+    $total = $days * $bike['price_per_day'] * $quantity;   
 
     $active_count = $db->query("SELECT COUNT(*) as count FROM rentals WHERE user_id = $user_id AND rental_status = 'active'")->fetch_assoc()['count'];
 

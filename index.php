@@ -12,9 +12,9 @@ include 'config/connection.php';
 </head>
 <body>
 
-    <div class="bg-secondary text-white py-5"> 
+<nav class="navbar navbar-dark bg-dark sticky-top shadow-sm"> 
         <div class="container tex-center py-5">
-            <h1 class="display-4">Bicycle Rental Shop</h1>
+            <h1 class="display-4 text-white">Rent Cycle</h1>
             <nav class="nav">
                 <a class="nav-link text-white" href="index.php">Home</a>
                 <a class="nav-link text-white" href="about.php">About</a>
@@ -23,28 +23,30 @@ include 'config/connection.php';
                 <a class="nav-link text-white" href="register.php">Register</a>
             </nav>
         </div>
-
-    </div>
-
-   
+       
+</nav>
 
 
+
+    <div class="container text-center my-5">
+        <h2>Welcome to Our Bicycle Rental Shop!</h2>
+        <p class="lead">We offer a wide range of bicycles for rent.</p>
+        <div class="mt-4">
+            <a href="login.php" class="btn btn-primary" "mb-4">Login</a>
+            <a href="register.php" class="btn btn-secondary">Register</a>
+    
         
-        <p>Welcome to our bicycle rental shop! We offer a wide range of bicycles for rent.</p>
-        <a href="login.php" class="btn btn-primary" "mb-4">Login</a>
-        <a href="register.php" class="btn btn-secondary">Register</a>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<footer class="bg-dark text-white-50 text-center py-3 mt-4">
+    <div class="container">
+        <small>&copy; 2026 CycleRent - Bicycle Rental System | Late fees support cycling education</small>
+    </div>
+</footer>
 
-<!--   <section class="hero">
-  <div class="hero-content">
-    <h1>Welcome to Our Platform</h1>
-    <p>The easiest way to manage your tasks</p>
-    <button class="cta-button">Get Started →</button>
-  </div>
-  <div class="hero-image">
-    <img src="hero-image.jpg" alt="Product demo">
-  </div>
-</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+    

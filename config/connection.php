@@ -49,4 +49,20 @@ function requireAdmin() {
         exit();
     }
 }
+
+// calculate late fee
+function calculateLateFee($expectedDate, $actualDate, $dailyPrice) {
+    $expected = new DateTime($expectedDate);
+    $actual = new DateTime($actualDate);
+    
+    if ($actual <= $expected) {
+        return ['days_late' => 0, 'fee' => 0];
+    }
+    
+    $diff = $expected->diff($actual);
+    $daysLate = $diff->days;
+    $fee = $daysLate * ($dailyPrice * 0.30);
+    
+    return ['days_late' => $daysLate, 'fee' => $fee];
+}
 ?>

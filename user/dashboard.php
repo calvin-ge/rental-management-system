@@ -74,7 +74,7 @@ function getBikeImage($category) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard | CycleRent</title>
+    <title>Customer Dashboard | RentCycle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
@@ -83,7 +83,7 @@ function getBikeImage($category) {
 <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold" href="#">
-            <i class="bi bi-bicycle me-2"></i>CycleRent
+            <i class="bi bi-bicycle me-2"></i>RentCycle
         </a>
         <div class="dropdown">
             <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -355,9 +355,9 @@ function getBikeImage($category) {
                             </td>
                             <td><?php echo date('M d', strtotime($history['rent_start_date'])); ?> - <?php echo date('M d, Y', strtotime($history['actual_return_date'])); ?></td>
                             <td><?php echo $history['quantity_rented']; ?></td>
-                            <td>$<?php echo number_format($history['total_amount'], 2); ?></td>
+                            <td>£<?php echo number_format($history['total_amount'], 2); ?></td>
                             <td class="<?php echo $history['late_fee'] > 0 ? 'text-danger fw-bold' : 'text-muted'; ?>">
-                                $<?php echo number_format($history['late_fee'], 2); ?>
+                                £<?php echo number_format($history['late_fee'], 2); ?>
                                 <?php if($history['late_fee'] > 0): ?>
                                     <i class="bi bi-heart-fill text-danger" title="Donated to charity!"></i>
                                 <?php endif; ?>
@@ -381,9 +381,9 @@ function getBikeImage($category) {
 </div>
 
 <footer class="bg-dark text-white-50 text-center py-3 mt-4">
-    <div class="container">
-        <small>&copy; 2026 CycleRent - Bicycle Rental System | Late fees support cycling education</small>
-    </div>
+        <div class="container">
+            <small>&copy; 2026 CycleRent - Bicycle Rental System | Late fees support cycling education</small>
+        </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

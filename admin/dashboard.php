@@ -23,6 +23,10 @@ $rentals = $db->query("SELECT r.*, b.name as bike_name, u.fullname
                      JOIN users u ON r.user_id = u.uid 
                      ORDER BY r.rental_id DESC");
 
+// Donations for Charity
+$charity = $db->query("SELECT * FROM charity_donations ORDER BY donation_id DESC LIMIT 20");
+
+
 // Message handler
 $message = $_SESSION['successful'] ?? '';
 $error_message = $_SESSION['error'] ?? '';
@@ -40,35 +44,21 @@ unset($_SESSION['succesful'], $_SESSION['error']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <div class="bg-secondary text-white py-5"> 
-        <div class="container-fluid">
-            <span class="navbar-brand">Admin Dashboard</span>
-            <nav class="nav"> 
-                
-                <a class="nav-link text-white" href="../index.php">Home</a>
-                <a class="nav-link text-white" href="../about.php">About</a>
-                <a class="nav-link text-white" href="../contact.php">Contact</a>
-                <a class="nav-link text-white" href="../login.php">Login</a>
-                <a class="nav-link text-white" href="../register.php">Register</a>
-                <a href="../logout.php" class="btn btn-danger btn-sm">Logout</a>
-                 <span class="text-white me-3">Welcome, <?php echo $_SESSION['fullname']; ?></span>
-            
-            </nav>  
-        </div>
-
-    </div>
-
-     <nav class="navbar navbar-dark bg-dark">
+<div class="bg-dark text-white py-3">
     <div class="container-fluid">
-        <span class="navbar-brand">
-            <!-- <i class="bi "></i> Admin Dashboard -->
-            
-        </span>
-        <div>
-          
-            
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"> Admin Dashboard</h4>
+            <div class="d-flex align-items-center gap-3">
+                <span><i class="bi bi-person-circle"></i> <?php echo $_SESSION['fullname']; ?></span>
+                <a href="../logout.php" class="btn btn-outline-light btn-sm"> Logout</a>
+            </div>
         </div>
     </div>
+</div>
+
+
+
+
 </nav>
 
 <div class="container mt-4">
@@ -86,6 +76,23 @@ unset($_SESSION['succesful'], $_SESSION['error']);
         </div>
         <?php endif; ?>
 
+      <!---  switch between tabs -->
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#bikesTab">Bikes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#usersTab">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#rentalsTab">Rentals</a>
+        
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" data-bs-target="#charityTab"> Charity</a>
+        </li>
+    </ul>
+
 
     <!--- Bike Inventory Overview -->
     <div class="row mb-4">
@@ -100,47 +107,35 @@ unset($_SESSION['succesful'], $_SESSION['error']);
 
 
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
+            <div class="card text-white bg-success mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Customers</h5>
-                    <p class="card-text display-4"><?php echo $total_users; ?></p>
+                    <h2><?php echo $total_users; ?></h2>
                 </div>
             </div>
         </div>
     
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
+            <div class="card text-white bg-warning mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Active Rentals</h5>
-                    <p class="card-text display-4"><?php echo $active_rentals; ?></p>
+                    <h2><?php echo $active_rentals; ?></h2>
                 </div>
             </div>
         </div>
     
 
-        
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
+            <div class="card text-white bg-danger mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Charity Donations</h5>
-                    <p class="card-text display-4"><?php echo number_format($total_donated, 0); ?></p>
+                    <h2>£<?php echo number_format($total_donated, 0); ?></h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <!---  switch between tabs -->
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#bikesTab">Bikes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#usersTab">Users</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#rentalsTab">Rentals</a>
-        </li>
-    </ul>
+  
 
     <div class="tab-content">
         
@@ -161,18 +156,31 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                                 <option value="City">City</option>
                                 <option value="Road">Road</option>
                                 <option value="Electric">Electric</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Kids">Kids</option>
+                                <option value="Cruiser">Cruiser</option>
                             </select>
                         </div>
                         
                         <div class="col-md-2">
                             <input type="number" step="0.01" name="price_per_day" class="form-control" placeholder="Price/Day" required>
+
                         </div>
+
+                        <div class="col-md-3">
+                            <input type="text" name="serial_number" class="form-control" placeholder="Serial Number (e.g., EL-TWN-007)" required>
+                            <small class="text-muted">Format: XX-XXX-000 (e.g., EL-TWN-007)</small>
+                        </div>
+
+
+
 
                         <div class="col-md-2">
                             <input type="number" name="quantity" class="form-control" placeholder="Quantity" required >
                         
                         </div>
                         <div class="col-md-1">
+                            
                             <button type="submit" class="btn btn-primary">Add</button>
                         </div>
                     </form>
@@ -203,23 +211,42 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                                 <?php while ($bike = $bikes->fetch_assoc()): ?>
                                 <tr>
                                     <td><?php echo $bike['bike_id']; ?></td>
-                                    <td><?php echo $bike['name']; ?></td>
+                                    <td><strong><?php echo $bike['name']; ?></strong></td>
                                     <td><?php echo $bike['category']; ?></td>
                                     <td><?php echo $bike['serial_number']; ?></td>
-                                    <td >£<?php echo number_format($bike['price_per_day'], 2); ?></td>
+                                    <td>£<?php echo number_format($bike['price_per_day'], 2); ?></td>
                                     <td>
-                                        <?php if ($bike['quantity'] <= 5): ?>
+                                        <?php if ($bike['quantity'] <= 3): ?>
                                             <span class="badge bg-danger"><?php echo $bike['quantity']; ?></span>
+                                        <?php elseif ($bike['quantity'] <= 8): ?>
+                                            <span class="badge bg-warning text-dark"><?php echo $bike['quantity']; ?></span>
                                         <?php else: ?>
                                             <span class="badge bg-success"><?php echo $bike['quantity']; ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="delete_bike.php?id=<?php echo (int)$bike["bike_id"]; ?>"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Do you want to remove this bike?')">
-                                            Delete
-                                        </a>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <!-- Increase -->
+                                            <a href="update_quantity.php?id=<?php echo $bike['bike_id']; ?>&action=increase" 
+                                               class="btn btn-success" 
+                                               title="Increase Quantity">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </a>
+                                            <!-- Decrease) -->
+                                            <a href="update_quantity.php?id=<?php echo $bike['bike_id']; ?>&action=decrease" 
+                                               class="btn btn-warning"
+                                               onclick="return confirm('Decrease quantity by 1?')"
+                                               title="Decrease Quantity">
+                                                <i class="bi bi-dash-lg"></i>
+                                            </a>
+                                            <!-- Delete -->
+                                            <a href="delete_bike.php?id=<?php echo $bike['bike_id']; ?>" 
+                                               class="btn btn-danger"
+                                               onclick="return confirm('Permanently delete this bike?')"
+                                               title="Delete Bike">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
@@ -252,7 +279,7 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                         <div class="col-md-2">
                             <input type="password" name="password" class="form-control" placeholder="Password" required>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <button type="submit" class="btn btn-primary">Add User</button>
                         </div>
                     </form>
@@ -262,7 +289,7 @@ unset($_SESSION['succesful'], $_SESSION['error']);
 
             <div class="card mt-4">
                 <div class="card_header">
-                    <h5>Users</h5>
+                    <h5 class="mb-0"> Users </h5>
                 </div>
                 <div class ="card-body">
                     <div class="table-responsive">
@@ -318,22 +345,25 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                                     <th>ID</th>
                                     <th>Customer</th>
                                     <th>Bike</th>
-                                    <th>Rental Date</th>
+                                    <th>Start Date</th>
+                                    <th>Due Date</th>
                                     <th>Return Date</th>
                                     <th>Total</th>
+                                    <th>Late Fee</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php while ($rental = $rentals->fetch_assoc()): ?>
-                                <tr>
+                                <tr class="<?php echo ($rental['rental_status'] == 'active' && strtotime($rental['expected_return_date']) < time()) ? 'table-danger' : ''; ?>">
                                     <td><?php echo $rental['rental_id']; ?></td>
                                     <td><?php echo $rental['fullname']; ?></td>
                                     <td><?php echo $rental['bike_name']; ?></td>
-                                    <td><?php echo date("d M Y", strtotime($rental['rental_date'])); ?></td>
-                                    <td><?php echo date("d M Y", strtotime($rental['return_date'])); ?></td>
+                                    <td><?php echo date('d M Y', strtotime($rental['rent_start_date'])); ?></td>
+                                    <td><?php echo date('d M Y', strtotime($rental['expected_return_date'])); ?></td>
+                                    <td><?php echo $rental['actual_return_date'] ? date('d M Y', strtotime($rental['actual_return_date'])) : '-'; ?></td>
                                     <td>£<?php echo number_format($rental['total_amount'], 2); ?></td>
-
+                                    <td class="text-danger fw-bold">£<?php echo number_format($rental['late_fee'], 2); ?></td>
                                     <td>
                                         <?php if ($rental['rental_status'] == 'active'): ?>
                                             <span class="badge bg-warning">Active</span>
@@ -341,6 +371,47 @@ unset($_SESSION['succesful'], $_SESSION['error']);
                                             <span class="badge bg-success">Returned</span>
                                         <?php endif; ?>
                                     </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="charityTab">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-heart"></i> Charity Donations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <strong>Making a Difference!</strong> All late fees are automatically donated to 
+                        <strong>World Bicycle Relief</strong> - providing bikes for education.
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Rental ID</th>
+                                    <th>Days Late</th>
+                                    <th>Amount</th>
+                                    <th>Charity</th>
+                                    <th>Donation Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($donation = $charity->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo $donation['donation_id']; ?></td>
+                                    <td><?php echo $donation['rental_id']; ?></td>
+                                    <td><?php echo $donation['days_late']; ?> days</td>
+                                    <td class="text-success fw-bold">£<?php echo number_format($donation['amount'], 2); ?></td>
+                                    <td><?php echo $donation['charity_name']; ?></td>
+                                    <td><?php echo date('d M Y', strtotime($donation['donation_date'])); ?></td>
                                 </tr>
                                 <?php endwhile; ?>
                             </tbody>

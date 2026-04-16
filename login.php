@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user = mysqli_fetch_assoc($result);
 
             //code to store in sessiion
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['uid'];
             $_SESSION['username'] = $user['username']; 
             $_SESSION['fullname'] = $user['fullname'];
             $_SESSION['role'] = $user['role'];
@@ -66,8 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     </head>
     <body>
+        <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#">
+                    <i class="bi bi-bicycle me-2"></i>RentCycle</a>
+            </div>
+       
+        </nav>
+
+
         <div class="container mt-5">
-            <h2 class="text-center mb-4">Login to Bike Shop</h2>
+            
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <?php if ($error): ?>
@@ -96,4 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
